@@ -1,6 +1,13 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from core import models
+
+
+def sample_user(email='test@rainwalk.io', password='testpass'):
+    """Create a sample user"""
+    return get_user_model().objects.create_user(email, password)
+
 
 class ModelTest(TestCase):
 
@@ -43,3 +50,15 @@ class ModelTest(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_pet_str(self):
+        """Test the pet string representation"""
+        pet = models.Pet.objects.create(
+            user=sample_user(),
+            pet_name='Test pet name',
+            pet_species=1,
+            pet_breed=2,
+            pet_age=11
+        )
+
+        self.assertEqual(str(pet), pet.pet_name)

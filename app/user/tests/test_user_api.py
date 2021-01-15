@@ -14,6 +14,8 @@ PAYLOAD = {
             'email': 'test@rainwalk.io',
             'password': 'testpass',
             'name': 'Name',
+            'phone_number': '1234567899',
+            'zipcode': '12345'
 }
 
 
@@ -34,6 +36,8 @@ class PublicUserApiTest(TestCase):
             'email': 'test@rainwalk.io',
             'password': 'testpass',
             'name': 'Name',
+            'phone_number': '1234567899',
+            'zipcode': '12345'
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -48,6 +52,8 @@ class PublicUserApiTest(TestCase):
             'email': 'test@rainwalk.io',
             'password': 'testpass',
             'name': 'Name',
+            'phone_number': '1234567899',
+            'zipcode': '12345'
         }
         create_user(**payload)
         res = self.client.post(CREATE_USER_URL, payload)
@@ -60,6 +66,8 @@ class PublicUserApiTest(TestCase):
             'email': 'test@rainwalk.io',
             'password': 'pw',
             'name': 'Name',
+            'phone_number': '1234567899',
+            'zipcode': '12345'
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -84,6 +92,8 @@ class PublicUserApiTest(TestCase):
             email='test@rainwalk.io',
             password='wrong',
             name='Name',
+            phone_number='1234567899',
+            zipcode='12345'
         )
         payload = PAYLOAD
         res = self.client.post(TOKEN_URL, payload)
@@ -121,6 +131,7 @@ class PrivateUserApiTests(TestCase):
             email='test@rainwalk.io',
             password='testpass',
             name='name',
+
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -131,8 +142,10 @@ class PrivateUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
-            'name': self.user.name,
             'email': self.user.email,
+            'name': self.user.name,
+            'phone_number': self.user.phone_number,
+            'zipcode': self.user.zipcode,
         })
 
     def test_post_me_not_allowed(self):
@@ -146,10 +159,14 @@ class PrivateUserApiTests(TestCase):
         payload = {
             'name': 'new name',
             'password': 'newpassword12345',
+            'phone_number': '1111111111',
+            'zipcode': '11111'
         }
         res = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
+        self.assertEqual(self.user.phone_number, payload['phone_number'])
+        self.assertEqual(self.user.zipcode, payload['zipcode'])
         self.assertEqual(res.status_code, status.HTTP_200_OK)

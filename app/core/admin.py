@@ -18,6 +18,8 @@ class UserAdmin(BaseUserAdmin):
         (_('Personal Info'), {
             'fields': (
                 'name',
+                'phone_number',
+                'zipcode',
             )
         }),
         (_('Permissions'), {
@@ -45,4 +47,7 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+# Register our useradamin to the admin
 admin.site.register(models.User, UserAdmin)
+# Register the Recipe model to the admin (no need for a speacil Useradmin)
+admin.site.register(models.Pet)
