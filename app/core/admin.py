@@ -19,7 +19,11 @@ class UserAdmin(BaseUserAdmin):
             'fields': (
                 'name',
                 'phone_number',
+                'address_1',
+                'address_2',
+                'city',
                 'zipcode',
+                'state',
             )
         }),
         (_('Permissions'), {

@@ -15,7 +15,11 @@ PAYLOAD = {
             'password': 'testpass',
             'name': 'Name',
             'phone_number': '1234567899',
-            'zipcode': '12345'
+            'address_1': '123 Main st',
+            'address_2': '#123',
+            'city': 'Washington, D.C.',
+            'zipcode': '12345',
+            'state': 'DC',
 }
 
 
@@ -37,7 +41,11 @@ class PublicUserApiTest(TestCase):
             'password': 'testpass',
             'name': 'Name',
             'phone_number': '1234567899',
-            'zipcode': '12345'
+            'address_1': '123 Main st',
+            'address_2': '#123',
+            'city': 'Washington, D.C.',
+            'zipcode': '12345',
+            'state': 'DC',
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -53,7 +61,11 @@ class PublicUserApiTest(TestCase):
             'password': 'testpass',
             'name': 'Name',
             'phone_number': '1234567899',
-            'zipcode': '12345'
+            'address_1': '123 Main st',
+            'address_2': '#123',
+            'city': 'Washington, D.C.',
+            'zipcode': '12345',
+            'state': 'DC',
         }
         create_user(**payload)
         res = self.client.post(CREATE_USER_URL, payload)
@@ -67,7 +79,11 @@ class PublicUserApiTest(TestCase):
             'password': 'pw',
             'name': 'Name',
             'phone_number': '1234567899',
-            'zipcode': '12345'
+            'address_1': '123 Main st',
+            'address_2': '#123',
+            'city': 'Washington, D.C.',
+            'zipcode': '12345',
+            'state': 'DC',
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -93,7 +109,11 @@ class PublicUserApiTest(TestCase):
             password='wrong',
             name='Name',
             phone_number='1234567899',
-            zipcode='12345'
+            address_1='123 Main st',
+            address_2='#123',
+            city='Washington, D.C.',
+            zipcode='12345',
+            state='DC',
         )
         payload = PAYLOAD
         res = self.client.post(TOKEN_URL, payload)
@@ -145,7 +165,11 @@ class PrivateUserApiTests(TestCase):
             'email': self.user.email,
             'name': self.user.name,
             'phone_number': self.user.phone_number,
+            'address_1': self.user.address_1,
+            'address_2': self.user.address_2,
+            'city': self.user.city,
             'zipcode': self.user.zipcode,
+            'state': self.user.state,
         })
 
     def test_post_me_not_allowed(self):
@@ -160,7 +184,11 @@ class PrivateUserApiTests(TestCase):
             'name': 'new name',
             'password': 'newpassword12345',
             'phone_number': '1111111111',
-            'zipcode': '11111'
+            'address_1': '123 Main st',
+            'address_2': '#123',
+            'city': 'Washington, D.C.',
+            'zipcode': '12345',
+            'state': 'DC',
         }
         res = self.client.patch(ME_URL, payload)
 
@@ -168,5 +196,9 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(self.user.phone_number, payload['phone_number'])
+        self.assertEqual(self.user.address_1, payload['address_1'])
+        self.assertEqual(self.user.address_2, payload['address_2'])
+        self.assertEqual(self.user.city, payload['city'])
         self.assertEqual(self.user.zipcode, payload['zipcode'])
+        self.assertEqual(self.user.state, payload['state'])
         self.assertEqual(res.status_code, status.HTTP_200_OK)

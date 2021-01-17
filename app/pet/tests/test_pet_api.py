@@ -44,7 +44,7 @@ class PublicPetpeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateRPeteApiTests(TestCase):
+class PrivatePeteApiTests(TestCase):
     """Test authenticated pet API access"""
 
     def setUp(self):
@@ -92,3 +92,59 @@ class PrivateRPeteApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_view_pet_detail(self):
+        """Test viewing a recipe detail"""
+        pet = sample_pet(user=self.user)
+
+        url = detail_url(pet.id)
+        res = self.client.get(url)
+        serializer = PetSerializer(pet)
+
+        self.assertEqual(res.data, serializer.data)
+
+    def test_create_basic_pet(self):
+        """Test creating pet"""
+        payload = {
+            'pet_name': 'test pet name',
+            'pet_species': 1,
+            'pet_breed': 2,
+            'pet_age': 19,
+        }
+        res = self.client.post(PET_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        pet = Pet.objects.get(id=res.data['id'])
+        for key in payload.keys():
+            self.assertEqual(payload[key], getattr(pet, key))
+
+    def test_partial_update_pet(self):
+        """Test updating a pet with patch"""
+        pet = sample_pet(user=self.user)
+        payload = {
+            'pet_name': 'TEST NEW NAME PATCH',
+            'pet_age': 1,
+        }
+        url = detail_url(pet.id)
+        self.client.patch(url, payload)
+
+        pet.refresh_from_db()
+        self.assertEqual(pet.pet_name, payload['pet_name'])
+
+    def test_full_update_pet(self):
+        """Test updating a pet with put"""
+        pet = sample_pet(user=self.user)
+        payload = {
+            'pet_name': 'TEST NEW NAME PUT',
+            'pet_species': 2,
+            'pet_breed': 1,
+            'pet_age': 2,
+        }
+        url = detail_url(pet.id)
+        self.client.put(url, payload)
+
+        pet.refresh_from_db()
+        self.assertEqual(pet.pet_name, payload['pet_name'])
+        self.assertEqual(pet.pet_species, payload['pet_species'])
+        self.assertEqual(pet.pet_breed, payload['pet_breed'])
+        self.assertEqual(pet.pet_age, payload['pet_age'])

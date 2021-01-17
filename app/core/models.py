@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
                                         PermissionsMixin
 from django.conf import settings
 from django.utils.translation import gettext as _
+# US STATES
+import core.constants.states as states
 
 from model_utils import Choices
 
@@ -42,13 +44,36 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=False,
         blank=False,
         default='0000000000'
-        )
+    )
+    address_1 = models.CharField(
+        max_length=255,
+        default='',
+        null=False,
+        blank=False
+    )
+    address_2 = models.CharField(
+        max_length=255,
+        default='',
+        null=False,
+        blank=False
+    )
+    city = models.CharField(
+        max_length=255,
+        default='',
+        null=False,
+        blank=False
+    )
     zipcode = models.CharField(
         max_length=5,
         null=False,
         blank=False,
         default='00000'
-        )
+    )
+    state = models.CharField(
+        blank=True,
+        max_length=2,
+        choices=states.STATE_CHOICES
+    )
 
     objects = UserManager()
 
@@ -74,11 +99,11 @@ class Pet(models.Model):
     pet_species = models.PositiveSmallIntegerField(
         choices=SPECIES_LIST,
         default=SPECIES_LIST.cat
-        )
+    )
     pet_breed = models.PositiveSmallIntegerField(
         choices=BREED_LIST,
         default=BREED_LIST.bulldog
-        )
+    )
     pet_age = models.PositiveIntegerField()
     user = models.ForeignKey(
         # The model for the foreignKey
