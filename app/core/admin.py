@@ -55,3 +55,5 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(models.User, UserAdmin)
 # Register the Recipe model to the admin (no need for a speacil Useradmin)
 admin.site.register(models.Pet)
+# Register our Policy model to the admin
+admin.site.register(models.Policy)

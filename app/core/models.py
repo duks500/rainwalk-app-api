@@ -113,3 +113,34 @@ class Pet(models.Model):
 
     def __str__(self):
         return self.pet_name
+
+
+class Policy(models.Model):
+    """Policy to be assign to the pet"""
+
+    PREMIUM_LIST = Choices(
+        (0, 'silver', _('Silver')),
+        (1, 'gold', _('Gold')),
+        (2, 'platinum', _('Platinum')),
+    )
+    policy_number = models.CharField(
+        max_length=255,
+        default='12345',
+        null=False,
+        blank=False
+    )
+    policy_premium = models.PositiveSmallIntegerField(
+        choices=PREMIUM_LIST,
+        default=PREMIUM_LIST.silver
+    )
+    policy_deductible = models.PositiveIntegerField(default=0)
+    policy_coinsurance = models.PositiveIntegerField(default=0)
+    policy_limit = models.PositiveIntegerField(default=0)
+    policy_discount = models.PositiveIntegerField(default=0)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.policy_number
