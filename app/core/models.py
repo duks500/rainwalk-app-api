@@ -105,6 +105,7 @@ class Pet(models.Model):
         default=BREED_LIST.bulldog
     )
     pet_age = models.PositiveIntegerField()
+    pet_policy_premium = models.ManyToManyField('Policy')
     user = models.ForeignKey(
         # The model for the foreignKey
         settings.AUTH_USER_MODEL,

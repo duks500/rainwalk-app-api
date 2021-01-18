@@ -86,7 +86,7 @@ class PrivatePoliciesAPITests(TestCase):
     def test_create_policy_invalid(self):
         """Test creating an invalid policy fails"""
         payload = {
-            'policy_premium': 4,
+            'policy_premium': 3,
         }
 
         res = self.client.post(POLICY_URL, payload)
