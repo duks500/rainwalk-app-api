@@ -2,7 +2,7 @@ import operator
 
 from django.utils.functional import lazy
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import pgettext_lazy
+# from django.utils.translation import pgettext_lazy
 
 #: The 48 contiguous states, plus the District of Columbia.
 CONTIGUOUS_STATES = (
@@ -15,7 +15,7 @@ CONTIGUOUS_STATES = (
     ('DE', _('Delaware')),
     ('DC', _('District of Columbia')),
     ('FL', _('Florida')),
-    ('GA', pgettext_lazy('US state', 'Georgia')),
+    ('GA', _('Georgia')),
     ('ID', _('Idaho')),
     ('IL', _('Illinois')),
     ('IN', _('Indiana')),

@@ -3,8 +3,11 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
                                         PermissionsMixin
 from django.conf import settings
 from django.utils.translation import gettext as _
-# US STATES
+# LISTS
 import core.constants.states as states
+import core.constants.breed_list as breed_list
+import core.constants.age_list as age_list
+import core.constants.policy_limit_factor_list as policy_limit_factor_list
 
 from model_utils import Choices
 
@@ -138,6 +141,7 @@ class Policy(models.Model):
     policy_coinsurance = models.PositiveIntegerField(default=0)
     policy_limit = models.PositiveIntegerField(default=0)
     policy_discount = models.PositiveIntegerField(default=0)
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -145,3 +149,96 @@ class Policy(models.Model):
 
     def __str__(self):
         return self.policy_number
+
+
+class Quate(models.Model):
+    """Quate to be assign to user later on"""
+
+    GENDER_LIST = Choices(
+        ('Cat', ['Male', 'Female']),
+        ('Dog', ['Male', 'Female'])
+    )
+    BREEDING_ENDORSEMENT_LIST = Choices(
+        ('No'),
+        ('Male'),
+        ('Female')
+    )
+    quate_number = coinsurance_factor = models.PositiveIntegerField(
+        null=False,
+        default=12345,
+    )
+    base_rate = models.DecimalField(
+        default=54.11,
+        max_digits=4,
+        decimal_places=2
+    )
+    geographical_factor = models.DecimalField(
+        default=0,
+        max_digits=4,
+        decimal_places=2
+    )
+    gender_factor = models.CharField(
+        blank=True,
+        max_length=6,
+        choices=GENDER_LIST,
+    )
+    breed_factor = models.CharField(
+        blank=True,
+        max_length=255,
+        choices=breed_list.BREED_LIST
+    )
+    age_factor = models.CharField(
+        blank=True,
+        max_length=255,
+        choices=age_list.AGE_LIST
+    )
+    policy_limit_factor = models.CharField(
+        blank=True,
+        max_length=255,
+        choices=policy_limit_factor_list.POLICY_LIMIT_FACTOR_LIST
+    )
+    deductibale_factor = models.PositiveIntegerField(
+        default=500
+    )
+    coinsurance_factor = models.PositiveIntegerField(
+        default=50,
+    )
+    exam_fee_factor = models.BooleanField(
+        default=False
+    )
+    holistic_alternative_treatment_factor = models.BooleanField(
+        default=False
+    )
+    boarding_advertising_holoday_cancellation_rate = models.BooleanField(
+        default=False
+    )
+    breeding_endorsement = models.CharField(
+        blank=True,
+        max_length=255,
+        choices=BREEDING_ENDORSEMENT_LIST
+    )
+    discount_factor = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+    digital_partner_factor = models.BooleanField(
+        default=False
+    )
+    affinity_group_factor = models.BooleanField(
+        default=False
+    )
+    smart_collar_factor = models.BooleanField(
+        default=False
+    )
+    employee_benefit_factor = models.DecimalField(
+        default=0,
+        max_digits=4,
+        decimal_places=2
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.quate_number

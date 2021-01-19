@@ -70,7 +70,7 @@ class PrivatePoliciesAPITests(TestCase):
         self.assertEqual(res.data[0]['policy_number'], policy.policy_number)
 
     def test_create_policy_successful(self):
-        """Test creating a new ingredient"""
+        """Test creating a new policy"""
         payload = {
             'policy_premium': 1,
         }

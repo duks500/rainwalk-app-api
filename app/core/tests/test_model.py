@@ -62,3 +62,21 @@ class ModelTest(TestCase):
         )
 
         self.assertEqual(str(pet), pet.pet_name)
+
+    def test_policy_str(self):
+        """Test the policy string representation"""
+        policy = models.Policy.objects.create(
+            user=sample_user(),
+            policy_number='PA-99999'
+        )
+
+        self.assertEqual(str(policy), policy.policy_number)
+
+    def test_quate_str(self):
+        """Test the quate string representation"""
+        quate = models.Quate.objects.create(
+            user=sample_user(),
+            quate_number='12345'
+        )
+
+        self.assertEqual(str(quate), quate.quate_number)
