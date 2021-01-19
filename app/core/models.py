@@ -142,6 +142,7 @@ class Policy(models.Model):
     policy_limit = models.PositiveIntegerField(default=0)
     policy_discount = models.PositiveIntegerField(default=0)
 
+    policy_quate_number = models.ManyToManyField('Quate')
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -163,9 +164,11 @@ class Quate(models.Model):
         ('Male'),
         ('Female')
     )
-    quate_number = coinsurance_factor = models.PositiveIntegerField(
+    quate_number = models.CharField(
+        max_length=255,
+        default='12345',
         null=False,
-        default=12345,
+        blank=False
     )
     base_rate = models.DecimalField(
         default=54.11,
