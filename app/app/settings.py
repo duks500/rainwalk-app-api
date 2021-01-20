@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'core',
     'user',
     'pet',
+    'quate',
 ]
 
 MIDDLEWARE = [

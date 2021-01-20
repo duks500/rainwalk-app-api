@@ -75,8 +75,7 @@ class ModelTest(TestCase):
     def test_quate_str(self):
         """Test the quate string representation"""
         quate = models.Quate.objects.create(
-            user=sample_user(),
-            quate_number='12345'
+            quate_id='8d60c12a-1ac5-4903-a1e3-0a3a4fc16989'
         )
 
-        self.assertEqual(str(quate), quate.quate_number)
+        self.assertEqual(str(quate), quate.quate_id)

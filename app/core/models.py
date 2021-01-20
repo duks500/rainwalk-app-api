@@ -9,6 +9,8 @@ import core.constants.breed_list as breed_list
 import core.constants.age_list as age_list
 import core.constants.policy_limit_factor_list as policy_limit_factor_list
 
+import uuid
+
 from model_utils import Choices
 
 
@@ -86,29 +88,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Pet(models.Model):
     """Pet object"""
 
-    SPECIES_LIST = Choices(
-        (0, 'cat', _('Cat')),
-        (1, 'dog', _('Dog')),
-        (2, 'horse', _('Horse')),
-    )
-
-    BREED_LIST = Choices(
-        (0, 'bulldog', _('Bulldog')),
-        (1, 'pug', _('Pug')),
-        (2, 'boxer', _('Bocer')),
-    )
-
     pet_name = models.CharField(max_length=255)
-    pet_species = models.PositiveSmallIntegerField(
-        choices=SPECIES_LIST,
-        default=SPECIES_LIST.cat
+    pet_policy = models.OneToOneField(
+        'Policy',
+        on_delete=models.CASCADE
     )
-    pet_breed = models.PositiveSmallIntegerField(
-        choices=BREED_LIST,
-        default=BREED_LIST.bulldog
-    )
-    pet_age = models.PositiveIntegerField()
-    pet_policy_premium = models.ManyToManyField('Policy')
     user = models.ForeignKey(
         # The model for the foreignKey
         settings.AUTH_USER_MODEL,
@@ -128,6 +112,7 @@ class Policy(models.Model):
         (2, 'platinum', _('Platinum')),
     )
     policy_number = models.CharField(
+        unique=True,
         max_length=255,
         default='12345',
         null=False,
@@ -137,12 +122,15 @@ class Policy(models.Model):
         choices=PREMIUM_LIST,
         default=PREMIUM_LIST.silver
     )
-    policy_deductible = models.PositiveIntegerField(default=0)
-    policy_coinsurance = models.PositiveIntegerField(default=0)
-    policy_limit = models.PositiveIntegerField(default=0)
-    policy_discount = models.PositiveIntegerField(default=0)
-
-    policy_quate_number = models.ManyToManyField('Quate')
+    # Those fields are provided by the quate model
+    # policy_deductible = models.PositiveIntegerField(default=0)
+    # policy_coinsurance = models.PositiveIntegerField(default=0)
+    # policy_limit = models.PositiveIntegerField(default=0)
+    # policy_discount = models.PositiveIntegerField(default=0)
+    policy_quate_number = models.OneToOneField(
+        'Quate',
+        on_delete=models.CASCADE
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -164,11 +152,12 @@ class Quate(models.Model):
         ('Male'),
         ('Female')
     )
-    quate_number = models.CharField(
+    quate_id = models.CharField(
         max_length=255,
-        default='12345',
+        primary_key=True,
+        unique=True, default=uuid.uuid4,
+        blank=False,
         null=False,
-        blank=False
     )
     base_rate = models.DecimalField(
         default=54.11,
@@ -238,10 +227,10 @@ class Quate(models.Model):
         max_digits=4,
         decimal_places=2
     )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
+    # user = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.CASCADE
+    # )
 
     def __str__(self):
-        return self.quate_number
+        return self.quate_id
