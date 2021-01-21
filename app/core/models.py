@@ -85,24 +85,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 
-class Pet(models.Model):
-    """Pet object"""
-
-    pet_name = models.CharField(max_length=255)
-    pet_policy = models.OneToOneField(
-        'Policy',
-        on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        # The model for the foreignKey
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return self.pet_name
-
-
 class Policy(models.Model):
     """Policy to be assign to the pet"""
 
@@ -122,11 +104,6 @@ class Policy(models.Model):
         choices=PREMIUM_LIST,
         default=PREMIUM_LIST.silver
     )
-    # Those fields are provided by the quate model
-    # policy_deductible = models.PositiveIntegerField(default=0)
-    # policy_coinsurance = models.PositiveIntegerField(default=0)
-    # policy_limit = models.PositiveIntegerField(default=0)
-    # policy_discount = models.PositiveIntegerField(default=0)
     policy_quate_number = models.OneToOneField(
         'Quate',
         on_delete=models.CASCADE
@@ -158,6 +135,10 @@ class Quate(models.Model):
         unique=True, default=uuid.uuid4,
         blank=False,
         null=False,
+    )
+    pet_name = models.CharField(
+        max_length=255,
+        default='MAX'
     )
     base_rate = models.DecimalField(
         default=54.11,
@@ -227,10 +208,6 @@ class Quate(models.Model):
         max_digits=4,
         decimal_places=2
     )
-    # user = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL,
-    #     on_delete=models.CASCADE
-    # )
 
     def __str__(self):
         return self.quate_id

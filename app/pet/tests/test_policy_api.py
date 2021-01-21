@@ -5,12 +5,17 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Policy
+from core.models import Policy, Quate
 
 from pet.serializers import PolicySerializer
 
 
 POLICY_URL = reverse('pet:policy-list')
+
+
+def sample_quate(quate_id):
+    """Create a sample quate"""
+    return Quate.objects.create(quate_id=quate_id)
 
 
 class PublicPoliciesApiTests(TestCase):
@@ -39,8 +44,18 @@ class PrivatePoliciesAPITests(TestCase):
 
     def test_retrieve_policy_list(self):
         """Test retrieving a list of policies"""
-        Policy.objects.create(user=self.user, policy_number='PA-12345')
-        Policy.objects.create(user=self.user, policy_number='PA-54321')
+        quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc8')
+        quate2 = sample_quate('697fa3a0-23b1-4e41-9af2-70980a719cf3')
+        Policy.objects.create(
+            user=self.user,
+            policy_number='PA-12345',
+            policy_quate_number=quate1
+        )
+        Policy.objects.create(
+            user=self.user,
+            policy_number='PA-54321',
+            policy_quate_number=quate2
+        )
 
         res = self.client.get(POLICY_URL)
 
@@ -56,11 +71,17 @@ class PrivatePoliciesAPITests(TestCase):
             'other@rainwalk.io',
             'testpass12345',
         )
-
-        Policy.objects.create(user=user2, policy_number='PA-99999')
+        quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc8')
+        Policy.objects.create(
+            user=user2,
+            policy_number='PA-99999',
+            policy_quate_number=quate1,
+        )
+        quate2 = sample_quate('697fa3a0-23b1-4e41-9af2-70980a719cf3')
         policy = Policy.objects.create(
             user=self.user,
-            policy_number='PA-12345'
+            policy_number='PA-12345',
+            policy_quate_number=quate2,
         )
 
         res = self.client.get(POLICY_URL)
@@ -71,8 +92,10 @@ class PrivatePoliciesAPITests(TestCase):
 
     def test_create_policy_successful(self):
         """Test creating a new policy"""
+        quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc8')
         payload = {
             'policy_premium': 1,
+            'policy_quate_number': quate1,
         }
         self.client.post(POLICY_URL, payload)
 
@@ -85,8 +108,10 @@ class PrivatePoliciesAPITests(TestCase):
 
     def test_create_policy_invalid(self):
         """Test creating an invalid policy fails"""
+        quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc8')
         payload = {
             'policy_premium': 3,
+            'policy_quate_number': quate1,
         }
 
         res = self.client.post(POLICY_URL, payload)

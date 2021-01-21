@@ -9,6 +9,11 @@ def sample_user(email='test@rainwalk.io', password='testpass'):
     return get_user_model().objects.create_user(email, password)
 
 
+def sample_quate(quate_id):
+    """Create a sample quate"""
+    return models.Quate.objects.create(quate_id=quate_id)
+
+
 class ModelTest(TestCase):
 
     def test_create_user_with_email_successfult(self):
@@ -51,23 +56,13 @@ class ModelTest(TestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
-    def test_pet_str(self):
-        """Test the pet string representation"""
-        pet = models.Pet.objects.create(
-            user=sample_user(),
-            pet_name='Test pet name',
-            pet_species=1,
-            pet_breed=2,
-            pet_age=11
-        )
-
-        self.assertEqual(str(pet), pet.pet_name)
-
     def test_policy_str(self):
         """Test the policy string representation"""
+        quate = sample_quate('c83cbe43-5c30-4a5f-860b-5b8e9927ff8e')
         policy = models.Policy.objects.create(
             user=sample_user(),
-            policy_number='PA-99999'
+            policy_number='PA-99999',
+            policy_quate_number=quate
         )
 
         self.assertEqual(str(policy), policy.policy_number)

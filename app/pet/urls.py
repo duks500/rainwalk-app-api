@@ -5,7 +5,6 @@ from pet import views
 
 
 router = DefaultRouter()
-router.register('pets', views.PetViewSet)
 router.register('polices', views.PolicyViewSet)
 
 app_name = 'pet'
