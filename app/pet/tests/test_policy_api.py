@@ -13,9 +13,26 @@ from pet.serializers import PolicySerializer
 POLICY_URL = reverse('pet:policy-list')
 
 
+def detail_url(policy_id):
+    """Return policy deatil URL"""
+    return reverse('pet:policy-detail', args=[policy_id])
+
+
 def sample_quate(quate_id):
     """Create a sample quate"""
     return Quate.objects.create(quate_id=quate_id)
+
+
+def sample_policy(user, **params):
+    """Create and return a sample polciy"""
+    quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc0')
+    defaults = {
+        'policy_premium': 1,
+        'policy_quate_number': quate1,
+    }
+    defaults.update(params)
+
+    return Policy.objects.create(user=user, **defaults)
 
 
 class PublicPoliciesApiTests(TestCase):
@@ -90,6 +107,19 @@ class PrivatePoliciesAPITests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['policy_number'], policy.policy_number)
 
+    # def test_view_policy_detail(self):
+    #     """Test viewing a policy detail"""
+    #     quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12f11')
+    #     policy = Policy.objects.create(
+    #         user=self.user,
+    #         policy_number='PA-ZZZZZ',
+    #         policy_quate_number=quate1,
+    #     )
+    #     url = detail_url(policy)
+    #     serializer = PolicySerializer(policy.policy_number)
+    #
+    #     self.assertEqual(res.data, serializer.data)
+
     def test_create_policy_successful(self):
         """Test creating a new policy"""
         quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc8')
@@ -117,3 +147,18 @@ class PrivatePoliciesAPITests(TestCase):
         res = self.client.post(POLICY_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_filter_policies_by_quates(self):
+        """Test returing policy with specific quate number"""
+        policy1 = sample_policy(user=self.user, policy_premium=1)
+        quate1 = sample_quate('be1795f2-2921-47bc-af26-e9bbcdd12fc8')
+        # policy1.policy_quate_number_set.create()
+
+        res = self.client.get(
+            POLICY_URL,
+            {'policy_quate_number': f'{quate1}'}
+        )
+
+        serializer1 = PolicySerializer(policy1)
+
+        self.assertIn(serializer1.data, res.data)

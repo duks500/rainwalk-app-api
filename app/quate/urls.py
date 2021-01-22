@@ -10,5 +10,5 @@ router.register('quates', views.QuateViewSet)
 app_name = 'quate'
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
 ]
