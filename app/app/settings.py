@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'user',
     'pet',
     'quate',
+    'billing_bot',
 ]
 
 MIDDLEWARE = [

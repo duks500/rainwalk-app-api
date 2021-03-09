@@ -11,6 +11,8 @@ import core.constants.policy_limit_factor_list as policy_limit_factor_list
 
 import uuid
 
+import datetime
+
 from model_utils import Choices
 
 
@@ -79,10 +81,52 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=2,
         choices=states.STATE_CHOICES
     )
+    paid_until = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    def has_paid_for_current_month(self, current_date=datetime.date.today()):
+        """Check if the use rpaid for the current month"""
+        if self.paid_until is None:
+            return False
+
+        return current_date < self.paid_until
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class BillingBot(models.Model):
+    """Billing bot for payment"""
+
+    bot_id = models.CharField(
+        max_length=255,
+        primary_key=True,
+        unique=True,
+        default=uuid.uuid4,
+        blank=False,
+        null=False,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    paid_until = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def has_paid_for_current_month(self, current_date=datetime.date.today()):
+        """Check if the use rpaid for the current month"""
+
+        return current_date < self.paid_until
+
+    def __str__(self):
+        return self.bot_id
 
 
 class Policy(models.Model):

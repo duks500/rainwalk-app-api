@@ -57,3 +57,5 @@ admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Policy)
 # Register our Quate model to the admin
 admin.site.register(models.Quate)
+# Register our BillingBot model to the admin
+admin.site.register(models.BillingBot)

@@ -74,3 +74,12 @@ class ModelTest(TestCase):
         )
 
         self.assertEqual(str(quate), quate.quate_id)
+
+    def test_billing_bot_str(self):
+        """Test the billing bot string representation"""
+        billing_bot = models.BillingBot.objects.create(
+            user=sample_user(),
+            bot_id='8d60c12a-1ac5-4903-a1e3-0a3a4fc16901'
+        )
+
+        self.assertEqual(str(billing_bot), billing_bot.bot_id)
